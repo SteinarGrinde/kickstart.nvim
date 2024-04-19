@@ -116,6 +116,9 @@ vim.opt.clipboard = 'unnamedplus'
 -- Enable break indent
 vim.opt.breakindent = true
 
+-- Default shiftwidth
+vim.opt.shiftwidth = 4
+
 -- Save undo history
 vim.opt.undofile = true
 
@@ -238,6 +241,12 @@ require('lazy').setup({
   -- "gc" to comment visual regions/lines
   { 'numToStr/Comment.nvim', opts = {} },
 
+  -- quarto
+  { 'quarto-dev/quarto-nvim', opts = {}, dependencies = {
+    'jmbuhr/otter.nvim',
+    opts = {},
+  } },
+
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
   --    require('gitsigns').setup({ ... })
@@ -315,6 +324,40 @@ require('lazy').setup({
         end,
       },
       { 'nvim-telescope/telescope-ui-select.nvim' },
+
+      {
+        'epwalsh/obsidian.nvim',
+        version = '*', -- recommended, use latest release instead of latest commit
+        lazy = true,
+        ft = 'markdown',
+        -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
+        -- event = {
+        --   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
+        --   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/**.md"
+        --   "BufReadPre path/to/my-vault/**.md",
+        --   "BufNewFile path/to/my-vault/**.md",
+        -- },
+        dependencies = {
+          -- Required.
+          'nvim-lua/plenary.nvim',
+
+          -- see below for full list of optional dependencies 👇
+        },
+        opts = {
+          workspaces = {
+            {
+              name = 'personal',
+              path = '~/vaults/personal',
+            },
+            {
+              name = 'work',
+              path = '~/vaults/work',
+            },
+          },
+
+          -- see below for full list of options 👇
+        },
+      },
 
       -- Useful for getting pretty icons, but requires a Nerd Font.
       { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
@@ -538,7 +581,10 @@ require('lazy').setup({
       local servers = {
         -- clangd = {},
         -- gopls = {},
-        -- pyright = {},
+        pyright = {},
+        ruff = {},
+        ruff_lsp = {},
+        black = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -730,6 +776,7 @@ require('lazy').setup({
           --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
         },
         sources = {
+          { name = 'otter' },
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
           { name = 'path' },
